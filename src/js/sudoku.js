@@ -5,6 +5,11 @@ export default class SudokuGame {
 
   rowSafe(cellCords, num) {
     let [x, y] = cellCords;
-    return !this.board[y].some(cell => cell === num)
+    return !this.board[y].some(cell => cell === num);
+  }
+
+  colSafe(cellCords, num) {
+    let [x, y] = cellCords;
+    return !this.board.some(row => row[y] === num);
   }
 }
