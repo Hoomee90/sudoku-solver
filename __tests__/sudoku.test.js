@@ -26,10 +26,15 @@ describe (`safeToPlace`, () => {
   test(`rowSafe`, () => {
     expect(sudoku.rowSafe([0, 0], 0)).toBeFalsy();
     expect(sudoku.rowSafe([8, 8], 1)).toBeTruthy();
-  })
+  });
 
   test(`colSafe`, () => {
     expect(sudoku.colSafe([3, 3], 0)).toBeFalsy();
-    expect(sudoku.colSafe([6, 6], 1)).toBeTruthy();
-  })
+    expect(sudoku.colSafe([6, 6], 9)).toBeTruthy();
+  });
+
+  test(`boxSafe`, () => {
+    expect(sudoku.boxSafe([4, 4], 0)).toBeFalsy();
+    expect(sudoku.boxSafe([7, 7], 5)).toBeTruthy();
+  });
 });

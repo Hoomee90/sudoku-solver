@@ -12,4 +12,19 @@ export default class SudokuGame {
     let [x, y] = cellCords;
     return !this.board.some(row => row[y] === num);
   }
+
+  boxSafe(cellCords, num) {
+    let [x, y] = cellCords;
+    let boxStartRow = y - (y % 3);
+    let boxStartCol = x - (x % 3);
+
+    for (const boxRow of [0, 1, 2]) {
+      for (const boxCol of [0, 1, 2]) {
+        if (this.board[boxStartRow + boxRow][boxStartCol + boxCol] === num) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
