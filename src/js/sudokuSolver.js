@@ -1,4 +1,4 @@
-export default class SudokuGame {
+export default class SudokuSolver {
   constructor(initialBoard = null) {
     this.board = initialBoard || Array.from({ length: 9 }, () => Array(9).fill(0));
   }
@@ -26,5 +26,9 @@ export default class SudokuGame {
       }
     }
     return true;
+  }
+
+  safeToPlace(cellCords, num) {
+  return this.rowSafe(cellCords, num) && this.colSafe(cellCords, num) && this.boxSafe(cellCords, num);
   }
 }

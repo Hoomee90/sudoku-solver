@@ -1,10 +1,10 @@
-import SudokuGame from "../src/js/sudoku";
+import SudokuSolver from "../src/js/sudokuSolver";
 
 describe (`sudoku`, () => {
   let sudoku;
   
   beforeEach(() => {
-    sudoku = new SudokuGame();
+    sudoku = new SudokuSolver();
   });
   
   test(`should correctly create a sudoku object`, () => {
@@ -20,7 +20,7 @@ describe (`safeToPlace`, () => {
   let sudoku;
   
   beforeEach(() => {
-    sudoku = new SudokuGame();
+    sudoku = new SudokuSolver();
   });
 
   test(`rowSafe`, () => {
@@ -36,5 +36,10 @@ describe (`safeToPlace`, () => {
   test(`boxSafe`, () => {
     expect(sudoku.boxSafe([4, 4], 0)).toBeFalsy();
     expect(sudoku.boxSafe([7, 7], 5)).toBeTruthy();
+  });
+
+  test(`safetoPlace`, () => {
+    expect(sudoku.safeToPlace([2, 2], 0)).toBeFalsy();
+    expect(sudoku.safeToPlace([1, 1], 3)).toBeTruthy();
   });
 });

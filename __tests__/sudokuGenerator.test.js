@@ -1,0 +1,1 @@
+import SudokuGenerator from "../src/js/sudokuGenerator";
