@@ -12,4 +12,18 @@ export default class sudokuGenerator {
   constructor(initialSeed, difficulty) {
     this.seed = initialSeed || seeds[difficulty ? difficulty : ["easy", "medium", "hard", "vHard"].sort(() => Math.random() - 0.5).slice(0, 1)][Math.floor(Math.random() * 2)];
   }
+
+  rotateMatrix() {
+    let tempMatrix = Array.from(Array(9), () => Array(9));
+
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        let el = this.seed[i][j];
+        let index = 9 - (i + 1)
+
+        tempMatrix[j][index] = el;
+      }
+    }
+    return tempMatrix;
+  }
 }
