@@ -38,7 +38,18 @@ export default class sudokuGenerator {
     return tempMatrix;
   }
 
-  mapNumbers(matrix = this.seed) {
-    
+  mapMatrix(matrix = this.seed) {
+    let conversion = {}
+    const shuffled = this.fisherYatesShuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+    shuffled.forEach((el, i) => conversion[i + 1] = el);
+    let tempMatrix = Array.from(Array(9), () => Array(9));
+
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        tempMatrix[i][j]  = matrix[i][j] ? conversion[matrix[i][j]] : 0;
+      }
+    }
+    return tempMatrix;
   }
 }

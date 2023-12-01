@@ -32,4 +32,11 @@ describe (`generateArray`, () => {
       [0, 0, 0, 0, 6, 2, 8, 0, 0],
       [2, 9, 0, 0, 0, 7, 0, 0, 0]]);
   });
+
+  test(`mapMatrix should map each number to another random number°`, () => {
+    // expect(sudoku.rotateMatrix().every((row, index) => row.every((el, index) => index <= 9) && index <= 9)).toBeTruthy();
+    const mappedMatrix = sudoku.mapMatrix();
+    expect(mappedMatrix[0][0]).toEqual(mappedMatrix[8][5]);
+    expect(mappedMatrix[0][0]).not.toEqual(mappedMatrix[0][3]);
+  });
 });
