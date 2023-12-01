@@ -61,7 +61,8 @@ export default class sudokuGenerator {
     ].flat();
   }
 
-  shuffleCols() {
-
+  shuffleCols(matrix = this.seed) {
+    let tempMatrix = this.shuffleRows(this.rotateMatrix(matrix));
+    return this.rotateMatrix(this.rotateMatrix(this.rotateMatrix(tempMatrix)));
   }
 }

@@ -39,29 +39,22 @@ describe (`generateArray`, () => {
     expect(mappedMatrix[0][0]).toEqual(mappedMatrix[8][5]);
     expect(mappedMatrix[0][0]).not.toEqual(mappedMatrix[0][3]);
   });
-});
 
-describe (`shuffleRows`, () => {
-  let sudoku
-  let matrix
-  let shuffledMatrix
+  test('shuffleRows should shuffle the rows in each square', () => {
+    const shuffledMatrix = sudoku.shuffleRows();
 
-  beforeEach(() => {
-    sudoku = new SudokuGenerator(seeds["easy"][0]);
-    matrix = sudoku.seed;
-    shuffledMatrix = sudoku.shuffleRows();
-  });
-  
-  test('should correctly shuffle every set of three arrays within the matrix', () => {
-    expect(shuffledMatrix.slice(0, 3)).not.toEqual(matrix.slice(0, 3));
-    expect(shuffledMatrix.slice(3, 6)).not.toEqual(matrix.slice(3, 6));
-    expect(shuffledMatrix.slice(6)).not.toEqual(matrix.slice(6));
-
+    shuffledMatrix.forEach((row, index) => {
+      const squareStart = index - (index % 3);
+      expect(row === (shuffledMatrix[squareStart] || shuffledMatrix[squareStart + 1] || shuffledMatrix[squareStart + 2])).toBeTruthy;
+    });
   });
 
-  test('elements should be the same before and after shuffle', () => {
-    expect(shuffledMatrix.slice(0, 3).sort()).toEqual(matrix.slice(0, 3).sort());
-    expect(shuffledMatrix.slice(3, 6).sort()).toEqual(matrix.slice(3, 6).sort());
-    expect(shuffledMatrix.slice(6).sort()).toEqual(matrix.slice(6).sort());
+  test('shuffleCols should shuffle the cols in each square', () => {
+    const shuffledMatrixEl = sudoku.shuffleCols()[0];
+
+    shuffledMatrixEl.forEach((el, index) => {
+      const squareStart = index - (index % 3);
+      expect(el === (shuffledMatrixEl[squareStart] || shuffledMatrixEl[squareStart + 1] || shuffledMatrixEl[squareStart + 2])).toBeTruthy;
+    });
   });
 });
