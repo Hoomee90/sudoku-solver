@@ -47,9 +47,21 @@ export default class sudokuGenerator {
 
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
-        tempMatrix[i][j]  = matrix[i][j] ? conversion[matrix[i][j]] : 0;
+        tempMatrix[i][j]  = conversion[matrix[i][j]] || 0;
       }
     }
     return tempMatrix;
+  }
+
+  shuffleRows(matrix = this.seed) {
+    return [
+      this.fisherYatesShuffle(matrix.slice(0, 3)),
+      this.fisherYatesShuffle(matrix.slice(3, 6)),
+      this.fisherYatesShuffle(matrix.slice(6))
+    ].flat();
+  }
+
+  shuffleCols() {
+
   }
 }

@@ -40,3 +40,28 @@ describe (`generateArray`, () => {
     expect(mappedMatrix[0][0]).not.toEqual(mappedMatrix[0][3]);
   });
 });
+
+describe (`shuffleRows`, () => {
+  let sudoku
+  let matrix
+  let shuffledMatrix
+
+  beforeEach(() => {
+    sudoku = new SudokuGenerator(seeds["easy"][0]);
+    matrix = sudoku.seed;
+    shuffledMatrix = sudoku.shuffleRows();
+  });
+  
+  test('should correctly shuffle every set of three arrays within the matrix', () => {
+    expect(shuffledMatrix.slice(0, 3)).not.toEqual(matrix.slice(0, 3));
+    expect(shuffledMatrix.slice(3, 6)).not.toEqual(matrix.slice(3, 6));
+    expect(shuffledMatrix.slice(6)).not.toEqual(matrix.slice(6));
+
+  });
+
+  test('elements should be the same before and after shuffle', () => {
+    expect(shuffledMatrix.slice(0, 3).sort()).toEqual(matrix.slice(0, 3).sort());
+    expect(shuffledMatrix.slice(3, 6).sort()).toEqual(matrix.slice(3, 6).sort());
+    expect(shuffledMatrix.slice(6).sort()).toEqual(matrix.slice(6).sort());
+  });
+});
