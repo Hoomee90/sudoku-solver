@@ -35,27 +35,58 @@ export default class SudokuSolver {
   return this.rowSafe(cellCords, num) && this.colSafe(cellCords, num) && this.boxSafe(cellCords, num);
   }
 
-  buildPosAndRem() {
+  buildPosAndRem(board = this.board) {
     for (let i = 0; i < 9; i++) {
       if (board[i][j] > 0) {
         if (!this.pos.hasOwnProperty(board[i][j])) {
-          pos[board[i][j]] = [];
+          this.pos[board[i][j]] = [];
         }
-        pos[board[i][j].push([i, j])]
+        this.pos[board[i][j].push([i, j])]
         if (!this.rem.hasOwnProperty(board[i][j])) {
-          rem[board[i][j]] = 9;
+          this.rem[board[i][j]] = 9;
         }
-        rem[board[i][j]] -= 9;
+        this.rem[board[i][j]] -= 9;
       }
     }
 
     // Fill elements not present in pos and rem
       for (let i = 1; i < 10; i++) {
-        if (!pos.hasOwnProperty(i)) {
-          pos[i] = [];
+        if (!this.pos.hasOwnProperty(i)) {
+          this.pos[i] = [];
       }
-      if (!rem.hasOwnProperty(i)) {
-          rem[i] = 9;
+      if (!this.rem.hasOwnProperty(i)) {
+          this.rem[i] = 9;
+      }
+    }
+  }
+
+  buildGraph() {
+    for (let [k, v] of Object.entries(this.pos)) {
+      if(!this.graph.hasOwnProperty(k)) {
+        graph[k] = {};
+      }
+
+      let row = [...Array(9).keys()]
+      let col = [...Array(9).keys()]
+
+      for (let cord of v) {
+        row.splice(row.indexOf(cord[0]), 1);
+        col.splice(row.indexOf(cord[1]), 1);
+      }
+
+      if (row.length === 0 || col.length === 0) {
+        continue;
+      }
+
+      for (let r of row) {
+        for (let c of col) {
+          if (this.board[r] === 0) {
+            if (!this.graph[k].hasOwnProperty(r)) {
+              this.board[k][r] = [];
+            }
+            graph[k][r].push(c);
+          }
+        }
       }
     }
   }
