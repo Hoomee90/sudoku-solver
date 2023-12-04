@@ -13,7 +13,7 @@ describe (`sudokuGenerator`, () => {
   });
 });
 
-describe (`generateArray`, () => { 
+describe (`generateBoard`, () => { 
   let sudoku;
   
   beforeEach(() => {
@@ -56,5 +56,11 @@ describe (`generateArray`, () => {
       const squareStart = index - (index % 3);
       expect(el === (shuffledMatrixEl[squareStart] || shuffledMatrixEl[squareStart + 1] || shuffledMatrixEl[squareStart + 2])).toBeTruthy;
     });
+  });
+
+  test(`generateBoard should do all of the above`, () => {
+    const shuffledMatrix = sudoku.generateBoard()
+
+    expect(shuffledMatrix).not.toEqual(sudoku);
   });
 });

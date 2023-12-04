@@ -1,27 +1,27 @@
 // Code used to scrape board seeds from websudoku.com
-/* function sudokuScraper() {
-  let rows = Array.from(document.querySelectorAll("table#puzzle_grid > tbody > *"));
-  let board = rows.map(rowEl => Array.from(rowEl.children).map((cellEl => cellEl.firstElementChild.value)))
-  board = board.map(rowArr => rowArr.map(cell => cell ? parseInt(cell) : 0));
-  return board
-} */
+// function sudokuScraper() {
+//   let rows = Array.from(document.querySelectorAll("table#puzzle_grid > tbody > *"));
+//   let board = rows.map(rowEl => Array.from(rowEl.children).map((cellEl => cellEl.firstElementChild.value)))
+//   board = board.map(rowArr => rowArr.map(cell => cell ? parseInt(cell) : 0));
+//   return board
+// }
 
 import seeds from './sudokuSeeds.json'
 
 export default class sudokuGenerator {
   constructor(initialSeed, difficulty) {
-    this.seed = initialSeed || seeds[difficulty ? difficulty : this.fisherYatesShuffle(["easy", "medium", "hard", "vHard"])[0]][this.fisherYatesShuffle([0, 1, 2])[0]];
+    this.seed = initialSeed || seeds[difficulty || this.fisherYatesShuffle(["easy", "medium", "hard", "vHard"])[0]][this.fisherYatesShuffle([0, 1, 2])[0]];
   }
   
   fisherYatesShuffle(deck){
     for (var i = deck.length - 1; i > 0; i--) {
-      const swapIndex = Math.floor(Math.random() * (i + 1))
-      const currentCard = deck[i]
-      const cardToSwap = deck[swapIndex]
-      deck[i] = cardToSwap
-      deck[swapIndex] = currentCard
+      const swapIndex = Math.floor(Math.random() * (i + 1));
+      const currentCard = deck[i];
+      const cardToSwap = deck[swapIndex];
+      deck[i] = cardToSwap;
+      deck[swapIndex] = currentCard;
     }
-    return deck
+    return deck;
   }
 
   rotateMatrix(matrix = this.seed) {
@@ -64,5 +64,15 @@ export default class sudokuGenerator {
   shuffleCols(matrix = this.seed) {
     let tempMatrix = this.shuffleRows(this.rotateMatrix(matrix));
     return this.rotateMatrix(this.rotateMatrix(this.rotateMatrix(tempMatrix)));
+  }
+
+  generateBoard(matrix = this.seed) {
+    let board = matrix;
+    for (let i = 0; i <= this.fisherYatesShuffle([0, 1, 2, 3])[0]; i++) {
+      board = this.rotateMatrix(board);
+    }
+    board = this.mapMatrix(board);
+    board = this.shuffleRows(this.shuffleCols(board));
+    return board;
   }
 }
