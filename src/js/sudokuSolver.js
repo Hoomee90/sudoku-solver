@@ -3,7 +3,7 @@ export default class SudokuSolver {
     //Array.from(Array(9), () => Array(9).fill(0))
     this.board = initialBoard;
     this.pos = {};
-    this.rem = {};
+    this.rem = new Map();
     this.graph = {};
   }
 
@@ -32,22 +32,30 @@ export default class SudokuSolver {
     return true;
   }
 
-  safeToPlace(cellCords, num) {
-  return this.rowSafe(cellCords, num) && this.colSafe(cellCords, num) && this.boxSafe(cellCords, num);
+  safeToPlace(x, y) {
+  const key = this.board[y][x];
+    if (!this.rowSafe([x, y], key) || !this.colSafe([x, y], key)) {
+      return false;
+    }
+
+    if (this.boxSafe([x, y], key)) {
+      return false
+    }
+    return true;
   }
 
   fillBoard(k, keys, r, rows) {
     for (let c of this.graph[keys[k]][rows[r]]) {
-      if (this.board[rows[r]] > 0) {
+      if (this.board[rows[r]][c] > 0) {
         continue;
       }
-      this.board[rows[r]] = keys[k]
+      this.board[rows[r]][c] = keys[k];
       if (this.safeToPlace(rows[r], c)) {
         if (r < rows.length - 1) {
           if (this.fillBoard(k, keys, r + 1, rows)) {
             return
           } else {
-            this.board[rows[r]] = 0;
+            this.board[rows[r]][c] = 0;
             continue;
           }
         } else {
@@ -55,30 +63,31 @@ export default class SudokuSolver {
             if (this.fillBoard(k + 1, keys, 0, Array.from(this.graph[keys[k + 1]].keys()))) {
               return true;
             } else {
-              this.board[rows[r]] = 0;
+              this.board[rows[r]][c] = 0;
               continue;
             }
           }
           return true;
         }
       }
-      this.board[rows[r]] = 0;
+      this.board[rows[r]][c] = 0;
     }
     return false;
   }
 
-  buildPosAndRem(board = this.board) {
+  buildPosAndRem() {
+    let remObj = {}
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
-        if (board[i][j] > 0) {
-          if (!this.pos.hasOwnProperty(board[i][j])) {
-            this.pos[board[i][j]] = [];
+        if (this.board[i][j] > 0) {
+          if (!this.pos.hasOwnProperty(this.board[i][j])) {
+            this.pos[this.board[i][j]] = [];
           }
-          this.pos[board[i][j]].push([i, j]);
-          if (!this.rem.hasOwnProperty(board[i][j])) {
-            this.rem[board[i][j]] = 9;
+          this.pos[this.board[i][j]].push([i, j]);
+          if (!remObj.hasOwnProperty(this.board[i][j])) {
+            remObj[this.board[i][j]] = 9;
           }
-          this.rem[board[i][j]] -= 9;
+          remObj[this.board[i][j]] -= 9;
         }
       }
     }
@@ -88,10 +97,17 @@ export default class SudokuSolver {
         if (!this.pos.hasOwnProperty(i)) {
           this.pos[i] = [];
       }
-      if (!this.rem.hasOwnProperty(i)) {
-          this.rem[i] = 9;
+      if (!remObj.hasOwnProperty(i)) {
+        remObj[i] = 9;
       }
     }
+
+    let remEntries = Object.entries(remObj);
+    remEntries = remEntries.sort((a, b) => a[1] - b[1]);
+    for (const [k, v] of remEntries) {
+      this.rem.set(parseInt(k), v);
+    }
+    console.log(this.rem)
   }
 
   buildGraph() {
@@ -103,7 +119,7 @@ export default class SudokuSolver {
       let row = [...Array(9).keys()]
       let col = [...Array(9).keys()]
 
-      for (let cord of v) {
+      for (const cord of v) {
         row.splice(row.indexOf(cord[0]), 1);
         col.splice(col.indexOf(cord[1]), 1);
       }
@@ -127,10 +143,15 @@ export default class SudokuSolver {
 
   solveBoard() {
     this.buildPosAndRem();
-    this.rem = Object.fromEntries(Object.entries(this.rem).sort((a, b) => a[1] - b [1]));
-    this.buildGraph()
+    this.buildGraph();
 
-    const remKeys = Object.keys(this.rem)
-    this.fillBoard(0, remKeys, 0, Object.keys(this.graph[remKeys[0]]));
+    let remKeys = [...this.rem.keys()];
+    let graphKeys = [];
+
+    for (let gKey of Object.keys(this.graph[remKeys[0]])) {
+      graphKeys.push(parseInt(gKey));
+    }
+
+    this.fillBoard(0, remKeys, 0, graphKeys);
   }
 }
