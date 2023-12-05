@@ -18,7 +18,7 @@ export default class SudokuSolver {
 
   colSafe(cellCords, num) {
     let [x, y] = cellCords;
-    return !this.board.some(row => row[y] === num);
+    return !this.board.some(row => row[x] === num);
   }
 
   boxSafe(cellCords, num) {
@@ -43,29 +43,28 @@ export default class SudokuSolver {
     }
 
     if (this.boxSafe([x, y], key)) {
-      return false
+      return false;
     }
     return true;
   }
 
-  fillBoard(k, r, rows) {
-    const remKeys = [...this.rem.keys()];
-    for (let c of this.graph[remKeys[k]][rows[r]]) {
+  fillBoard(k, keys, r, rows) {
+    for (let c of this.graph[keys[k]][rows[r]]) {
       if (this.board[rows[r]][c] > 0) {
         continue;
       }
-      this.board[rows[r]][c] = remKeys[k];
-      if (this.safeToPlace(rows[r], c)) {
+      this.board[rows[r]][c] = keys[k];
+      if (this.safeToPlace(c, rows[r])) {
         if (r < rows.length - 1) {
-          if (this.fillBoard(k, r + 1, rows)) {
-            return
+          if (this.fillBoard(k, keys, r + 1, rows)) {
+            return true;
           } else {
             this.board[rows[r]][c] = 0;
             continue;
           }
         } else {
-          if (k < remKeys.length - 1) {
-            if (this.fillBoard(k + 1, 0, this.graphKeys(k + 1))) {
+          if (k < keys.length - 1) {
+            if (this.fillBoard(k + 1, keys, 0, this.graphKeys(k + 1))) {
               return true;
             } else {
               this.board[rows[r]][c] = 0;
@@ -149,6 +148,10 @@ export default class SudokuSolver {
     this.buildPosAndRem();
     this.buildGraph();
 
-    this.fillBoard(0, 0, this.graphKeys(this.remKeys[0]));
+    console.log(this);
+
+    const remKeys = [...this.rem.keys()];
+
+    this.fillBoard(0, remKeys, 0, this.graphKeys(0));
   }
 }
