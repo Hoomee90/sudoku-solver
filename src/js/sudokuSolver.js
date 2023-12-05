@@ -7,6 +7,10 @@ export default class SudokuSolver {
     this.graph = {};
   }
 
+  graphKeys(index) {
+    return Object.keys(this.graph[[...this.rem.keys()][index]]).map(el => parseInt(el));
+  }
+
   rowSafe(cellCords, num) {
     let [x, y] = cellCords;
     return !this.board[y].some(cell => cell === num);
@@ -44,23 +48,24 @@ export default class SudokuSolver {
     return true;
   }
 
-  fillBoard(k, keys, r, rows) {
-    for (let c of this.graph[keys[k]][rows[r]]) {
+  fillBoard(k, r, rows) {
+    const remKeys = [...this.rem.keys()];
+    for (let c of this.graph[remKeys[k]][rows[r]]) {
       if (this.board[rows[r]][c] > 0) {
         continue;
       }
-      this.board[rows[r]][c] = keys[k];
+      this.board[rows[r]][c] = remKeys[k];
       if (this.safeToPlace(rows[r], c)) {
         if (r < rows.length - 1) {
-          if (this.fillBoard(k, keys, r + 1, rows)) {
+          if (this.fillBoard(k, r + 1, rows)) {
             return
           } else {
             this.board[rows[r]][c] = 0;
             continue;
           }
         } else {
-          if (k < keys.length - 1) {
-            if (this.fillBoard(k + 1, keys, 0, Array.from(this.graph[keys[k + 1]].keys()))) {
+          if (k < remKeys.length - 1) {
+            if (this.fillBoard(k + 1, 0, this.graphKeys(k + 1))) {
               return true;
             } else {
               this.board[rows[r]][c] = 0;
@@ -107,7 +112,6 @@ export default class SudokuSolver {
     for (const [k, v] of remEntries) {
       this.rem.set(parseInt(k), v);
     }
-    console.log(this.rem)
   }
 
   buildGraph() {
@@ -145,13 +149,6 @@ export default class SudokuSolver {
     this.buildPosAndRem();
     this.buildGraph();
 
-    let remKeys = [...this.rem.keys()];
-    let graphKeys = [];
-
-    for (let gKey of Object.keys(this.graph[remKeys[0]])) {
-      graphKeys.push(parseInt(gKey));
-    }
-
-    this.fillBoard(0, remKeys, 0, graphKeys);
+    this.fillBoard(0, 0, this.graphKeys(this.remKeys[0]));
   }
 }
