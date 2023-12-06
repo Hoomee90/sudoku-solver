@@ -1,9 +1,16 @@
 export default class SudokuSolver {
   constructor(initialBoard) {
     //Array.from(Array(9), () => Array(9).fill(0))
-    this.board = initialBoard;
-    this.pos = {};
-    this.rem = new Map();
+    this.board = initialBoard; //2D array
+    this.pos = {}; //board as represented cell value keys and each coordinate array as a values
+    this.rem = new Map(); // map of which keys are the order the values should be checked
+    // graph = {
+    //  cell value: {
+    //    row1: [columns],
+    //    row2: [columns],
+    ///   ...
+    //    }
+    // }
     this.graph = {};
   }
 
@@ -40,7 +47,7 @@ export default class SudokuSolver {
       return false;
     }
 
-    if (this.boxSafe(x, y, num)) {
+    if (!this.boxSafe(x, y, num)) {
       return false;
     }
     return true;

@@ -1,45 +1,47 @@
 import SudokuSolver from "../src/js/sudokuSolver";
+import seeds from '../src/js/sudokuSeeds.json'
 
-describe (`sudoku`, () => {
+describe (`sudokuSolver`, () => {
   let sudoku;
   
   beforeEach(() => {
-    sudoku = new SudokuSolver();
+    sudoku = new SudokuSolver(seeds["easy"][0]);
   });
   
   test(`should correctly create a sudoku object`, () => {
     expect(typeof sudoku).toEqual(`object`);
   });
 
-  test(`should create a 9x9 2D array`, () => {
+  test(`should have a 9x9 2D array property`, () => {
     expect(sudoku.board.every((row, index) => row.every((el, index) => index <= 9) && index <= 9)).toBeTruthy();
   });
 });
 
-describe (`safeToPlace`, () => {
+describe (`safelyPlaced`, () => {
   let sudoku;
   
   beforeEach(() => {
-    sudoku = new SudokuSolver();
+    sudoku = new SudokuSolver(seeds["bad"][0]);
   });
 
   test(`rowSafe`, () => {
-    expect(sudoku.rowSafe([0, 0], 0)).toBeFalsy();
-    expect(sudoku.rowSafe([8, 8], 1)).toBeTruthy();
+    sudoku.board[8][8] = 2;
+    expect(sudoku.rowSafe(0, 0, 1)).toBeTruthy();
+    expect(sudoku.rowSafe(8, 0, 6)).toBeFalsy();
   });
 
   test(`colSafe`, () => {
-    expect(sudoku.colSafe([3, 3], 0)).toBeFalsy();
-    expect(sudoku.colSafe([6, 6], 9)).toBeTruthy();
+    expect(sudoku.colSafe(3, 3, 8)).toBeFalsy();
+    expect(sudoku.colSafe(3, 1, 6)).toBeTruthy();
   });
 
   test(`boxSafe`, () => {
-    expect(sudoku.boxSafe([4, 4], 0)).toBeFalsy();
-    expect(sudoku.boxSafe([7, 7], 5)).toBeTruthy();
+    expect(sudoku.boxSafe(0, 0, 1)).toBeFalsy();
+    expect(sudoku.boxSafe(8, 8, 2)).toBeTruthy();
   });
 
-  test(`safetoPlace`, () => {
-    expect(sudoku.safeToPlace([2, 2], 0)).toBeFalsy();
-    expect(sudoku.safeToPlace([1, 1], 3)).toBeTruthy();
+  test(`safelyPlaced`, () => {
+    expect(sudoku.safelyPlaced(3, 0, 8)).toBeFalsy();
+    expect(sudoku.safelyPlaced(4, 4, 2)).toBeTruthy();
   });
 });
