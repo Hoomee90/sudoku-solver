@@ -11,38 +11,36 @@ export default class SudokuSolver {
     return Object.keys(this.graph[[...this.rem.keys()][index]]).map(el => parseInt(el));
   }
 
-  rowSafe(cellCords, num) {
-    let [x, y] = cellCords;
-    return !this.board[y].some(cell => cell === num);
+  rowSafe(x, y, num) {
+    return this.board[y].filter(cell => cell === num).length < 2;
   }
 
-  colSafe(cellCords, num) {
-    let [x, y] = cellCords;
-    return !this.board.some(row => row[x] === num);
+  colSafe(x, y, num) {
+    return this.board.filter(row => row[x] === num).length < 2;
   }
 
-  boxSafe(cellCords, num) {
-    let [x, y] = cellCords;
-    let boxStartRow = y - (y % 3);
-    let boxStartCol = x - (x % 3);
+  boxSafe(x, y, num) {
+    const boxStartRow = y - (y % 3);
+    const boxStartCol = x - (x % 3);
+    let numInstances = 0;
 
     for (const boxRow of [0, 1, 2]) {
       for (const boxCol of [0, 1, 2]) {
         if (this.board[boxStartRow + boxRow][boxStartCol + boxCol] === num) {
-          return false;
+          numInstances++;
         }
       }
     }
-    return true;
+    return numInstances < 2;
   }
 
-  safeToPlace(x, y) {
-  const key = this.board[y][x];
-    if (!this.rowSafe([x, y], key) || !this.colSafe([x, y], key)) {
+  safelyPlaced(x, y) {
+  const num = this.board[y][x];
+    if (!this.rowSafe(x, y, num) || !this.colSafe(x, y)) {
       return false;
     }
 
-    if (this.boxSafe([x, y], key)) {
+    if (this.boxSafe(x, y, num)) {
       return false;
     }
     return true;
@@ -54,8 +52,11 @@ export default class SudokuSolver {
         continue;
       }
       this.board[rows[r]][c] = keys[k];
-      if (this.safeToPlace(c, rows[r])) {
+      console.log(this.board);
+      
+      if (this.safelyPlaced(c, rows[r])) {
         if (r < rows.length - 1) {
+          // TODO: fix that this will always be false. What were they doing here???
           if (this.fillBoard(k, keys, r + 1, rows)) {
             return true;
           } else {
@@ -119,8 +120,8 @@ export default class SudokuSolver {
         this.graph[k] = {};
       }
 
-      let row = [...Array(9).keys()]
-      let col = [...Array(9).keys()]
+      let row = [...Array(9).keys()];
+      let col = [...Array(9).keys()];
 
       for (const cord of v) {
         row.splice(row.indexOf(cord[0]), 1);
@@ -147,8 +148,6 @@ export default class SudokuSolver {
   solveBoard() {
     this.buildPosAndRem();
     this.buildGraph();
-
-    console.log(this);
 
     const remKeys = [...this.rem.keys()];
 
