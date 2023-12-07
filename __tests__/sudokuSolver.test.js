@@ -94,7 +94,7 @@ describe(`buildGraph`, () => {
 
 describe(`solveBoard`, () => {
 
-  const validRow = (board) => {
+  const validRows = (board) => {
     for (let i = 0; i < 9; i++) {
       let rowSet = new Set();
 
@@ -110,12 +110,12 @@ describe(`solveBoard`, () => {
     return true;
   }
 
-  const validCol = (board) => {
+  const validCols = (board) => {
     for (let i = 0; i < 9; i++) {
       let colSet = new Set();
 
       for (let j = 0; j < 9; j++) {
-        if (board[i][j] > 0) {
+        if (board[j][i] > 0) {
           if (colSet.has(board[j][i])) {
             return false;
           }
@@ -126,13 +126,16 @@ describe(`solveBoard`, () => {
     return true;
   }
 
-  const validBox = (board) => {
-    for (let row = 0; row < board.length; row += 3) {
-      for (let col = 0; col < board.length; col += 3) {
+  const validBoxes = (board) => {
+    const size = 9;
+    const boxSize = 3;
+    
+    for (let row = 0; row < size; row += boxSize) {
+      for (let col = 0; col < size; col += boxSize) {
         let boxSet = new Set();
-
-        for (let r = 0; r < 3; r++) {
-          for (let c = 0; c < 3; c++) {
+  
+        for (let r = 0; r < boxSize; r++) {
+          for (let c = 0; c < boxSize; c++) {
             const val = board[row + r][col + c];
             if (val > 0) {
               if (boxSet.has(val)) {
@@ -144,28 +147,34 @@ describe(`solveBoard`, () => {
         }
       }
     }
+    return true;
   }
+
 
   for (const difficultyKey of Object.keys(seeds)) {
     if (difficultyKey === "test") {
       continue;
     }
     for (let boardNum in seeds[difficultyKey]) {
-      let newSudoku;
-      let deepSeed
       
-      beforeEach(() => {
-        deepSeed = structuredClone(seeds[difficultyKey][boardNum]);
-        newSudoku = new SudokuSolver(seeds[difficultyKey][boardNum]);
-      });
-
-      test(`should have a property of board ${boardNum} in difficulty ${difficultyKey}`, () => { 
-        expect(newSudoku.board).toEqual(deepSeed);
-      });
+      const deepSeed = structuredClone(seeds[difficultyKey][boardNum]);
+      let newSudoku = new SudokuSolver(seeds[difficultyKey][boardNum]);
+      newSudoku.solveBoard();
 
       test(`should give a solved difficulty board ${boardNum} in difficulty ${difficultyKey}`, () => {
-        newSudoku.solveBoard();
         expect(newSudoku.board).not.toEqual(deepSeed);
+      });
+
+      test(`rows are valid in solved board ${boardNum} of difficulty ${difficultyKey}`, () => {
+        expect(validRows(newSudoku.board)).toBeTruthy();
+      });
+
+      test(`cols are valid in solved board ${boardNum} of difficulty ${difficultyKey}`, () => {
+        expect(validCols(newSudoku.board)).toBeTruthy();
+      });
+
+      test(`boxes are valid in solved board ${boardNum} of difficulty ${difficultyKey}`, () => {
+        expect(validBoxes(newSudoku.board)).toBeTruthy();
       });
     }
   }
