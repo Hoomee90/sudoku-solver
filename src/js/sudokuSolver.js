@@ -24,6 +24,20 @@ export default class SudokuSolver {
     this.boxCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
   }
 
+  updateSafetyCache(x, y, num, add) {
+    const boxIndex = Math.floor(y / 3) * 3 + Math.floor(x / 3);
+
+    if (add) {
+      this.rowCache[y].add(num);
+      this.colCache[x].add(num);
+      this.boxCache[boxIndex].add(num);
+    } else {
+      this.rowCache[y].delete(num);
+      this.colCache[x].delete(num);
+      this.boxCache[boxIndex].delete(num);
+    }
+  }
+
   rowSafe(x, y, num) {
     return this.board[y].filter(cell => cell === num).length < 2;
   }
