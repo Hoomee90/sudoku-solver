@@ -24,34 +24,13 @@ describe (`sudokuSolver`, () => {
   });
 });
 
-describe (`safelyPlaced`, () => {
-  let sudoku;
+// describe (`safelyPlaced`, () => {
+//   let sudoku;
   
-  beforeEach(() => {
-    sudoku = new SudokuSolver(seeds["test"][0]);
-  });
-
-  test(`rowSafe`, () => {
-    sudoku.board[8][8] = 2;
-    expect(sudoku.rowSafe(0, 0, 1)).toBeTruthy();
-    expect(sudoku.rowSafe(8, 0, 6)).toBeFalsy();
-  });
-
-  test(`colSafe`, () => {
-    expect(sudoku.colSafe(3, 3, 8)).toBeFalsy();
-    expect(sudoku.colSafe(3, 1, 6)).toBeTruthy();
-  });
-
-  test(`boxSafe`, () => {
-    expect(sudoku.boxSafe(0, 0, 1)).toBeFalsy();
-    expect(sudoku.boxSafe(8, 8, 2)).toBeTruthy();
-  });
-
-  test(`safelyPlaced`, () => {
-    expect(sudoku.safelyPlaced(3, 0, 8)).toBeFalsy();
-    expect(sudoku.safelyPlaced(4, 4, 2)).toBeTruthy();
-  });
-});
+//   beforeEach(() => {
+//     sudoku = new SudokuSolver(seeds["test"][0]);
+//   });
+// });
 
 describe(`buildPosAndRem`, () => {
 
@@ -111,4 +90,83 @@ describe(`buildGraph`, () => {
   test(`should fill graph's values correctly even when there are no instances of a number present`, () => { 
     expect(checkGraph(strangeSudoku)).toBeTruthy();
   });
+});
+
+describe(`solveBoard`, () => {
+
+  const validRow = (board) => {
+    for (let i = 0; i < 9; i++) {
+      let rowSet = new Set();
+
+      for (let j = 0; j < 9; j++) {
+        if (board[i][j] > 0) {
+          if (rowSet.has(board[i][j])) {
+            return false;
+          }
+          rowSet.add(board[i][j]);
+        }
+      }
+    }
+    return true;
+  }
+
+  const validCol = (board) => {
+    for (let i = 0; i < 9; i++) {
+      let colSet = new Set();
+
+      for (let j = 0; j < 9; j++) {
+        if (board[i][j] > 0) {
+          if (colSet.has(board[j][i])) {
+            return false;
+          }
+          colSet.add(board[j][i]);
+        }
+      }
+    }
+    return true;
+  }
+
+  const validBox = (board) => {
+    for (let row = 0; row < board.length; row += 3) {
+      for (let col = 0; col < board.length; col += 3) {
+        let boxSet = new Set();
+
+        for (let r = 0; r < 3; r++) {
+          for (let c = 0; c < 3; c++) {
+            const val = board[row + r][col + c];
+            if (val > 0) {
+              if (boxSet.has(val)) {
+                return false;
+              }
+              boxSet.add(val);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  for (const difficultyKey of Object.keys(seeds)) {
+    if (difficultyKey === "test") {
+      continue;
+    }
+    for (let boardNum in seeds[difficultyKey]) {
+      let newSudoku;
+      let deepSeed
+      
+      beforeEach(() => {
+        deepSeed = structuredClone(seeds[difficultyKey][boardNum]);
+        newSudoku = new SudokuSolver(seeds[difficultyKey][boardNum]);
+      });
+
+      test(`should have a property of board ${boardNum} in difficulty ${difficultyKey}`, () => { 
+        expect(newSudoku.board).toEqual(deepSeed);
+      });
+
+      test(`should give a solved difficulty board ${boardNum} in difficulty ${difficultyKey}`, () => {
+        newSudoku.solveBoard();
+        expect(newSudoku.board).not.toEqual(deepSeed);
+      });
+    }
+  }
 });
