@@ -18,6 +18,12 @@ export default class SudokuSolver {
     return Object.keys(this.graph[[...this.rem.keys()][index]]).map(el => parseInt(el));
   }
 
+  initializeSafetyCache() {
+    this.rowCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
+    this.colCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
+    this.boxCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
+  }
+
   rowSafe(x, y, num) {
     return this.board[y].filter(cell => cell === num).length < 2;
   }
@@ -62,7 +68,6 @@ export default class SudokuSolver {
       
       if (this.safelyPlaced(c, rows[r])) {
         if (r < rows.length - 1) {
-          // TODO: fix that this will always be false. What were they doing here???
           if (this.fillBoard(k, keys, r + 1, rows)) {
             return true;
           } else {
