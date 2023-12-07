@@ -1,19 +1,26 @@
 import SudokuSolver from "../src/js/sudokuSolver";
 import seeds from '../src/js/sudokuSeeds.json'
 
-describe (`sudokuSolver`, () => {
-  let sudoku;
+let sudoku;
+let strangeSudoku;
   
-  beforeEach(() => {
-    sudoku = new SudokuSolver(seeds["easy"][0]);
-  });
+beforeEach(() => {
+  sudoku = new SudokuSolver(seeds["easy"][0]);
+  strangeSudoku = new SudokuSolver(seeds["bad"][1]);
+  strangeSudoku.buildPosAndRem();
+  strangeSudoku.buildGraph();
+  sudoku.buildPosAndRem();
+  sudoku.buildGraph();
+});
+
+describe (`sudokuSolver`, () => {
   
   test(`should correctly create a sudoku object`, () => {
     expect(typeof sudoku).toEqual(`object`);
   });
 
   test(`should have a 9x9 2D array property`, () => {
-    expect(sudoku.board.every((row, index) => row.every((el, index) => index <= 9) && index <= 9)).toBeTruthy();
+    expect(sudoku.board.every((row, index) => row.every((el, index) => index = 9 && index < 9))).toBeTruthy();
   });
 });
 
@@ -43,5 +50,61 @@ describe (`safelyPlaced`, () => {
   test(`safelyPlaced`, () => {
     expect(sudoku.safelyPlaced(3, 0, 8)).toBeFalsy();
     expect(sudoku.safelyPlaced(4, 4, 2)).toBeTruthy();
+  });
+});
+
+describe(`buildPosAndRem`, () => {
+
+  const checkPos = (newBoard, solver) => {
+    for (const key of Object.keys(solver.pos)) {
+      solver.pos[key].forEach((el) => newBoard[el[0]][el[1]] = parseInt(key));
+    }
+  }
+
+  const checkRem = (solver) => {
+    return [...solver.rem.keys()].sort((a, b) => solver.board.filter(row => row.includes(a)) - solver.board.filter(row => row.includes(b)));
+  }
+
+  test(`should modify pos and rem values`, () => {
+    expect(sudoku.pos).not.toEqual({});
+    expect(sudoku.rem).not.toEqual(new Map());
+  });
+
+  test(`should make pos represent every element on the board`, () => {
+    let newBoard = Array.from(Array(9), () => Array(9).fill(0));
+    
+    checkPos(newBoard, sudoku);
+    expect(sudoku.board).toEqual(newBoard);
+  });
+
+  test(`pos should work even on boards with no instances of a number`, () => {
+    let newBoard = Array.from(Array(9), () => Array(9).fill(0));
+    
+    checkPos(newBoard, strangeSudoku);
+    expect(strangeSudoku.board).toEqual(newBoard);
+  });
+
+  test(`should make rem a map whose keys are the order of most to least common preexisting cell values`, () => {
+    expect([...sudoku.rem.keys()]).toEqual(checkRem(sudoku));
+  });
+
+  test(`rem should work even on boards with no instances of a number`, () => {
+    
+    expect([...strangeSudoku.rem.keys()]).toEqual(checkRem(strangeSudoku));
+  });
+});
+
+describe(`buildGraph`, () => {
+
+  const checkGraph = () => {
+    return Object.keys(sudoku.graph).every(key => Object.keys(sudoku.graph[key]).every(row => sudoku.graph[key][row].every(col => col < 9) && parseInt(row) < 9));
+  }
+
+  test(`should make the graph contain values keyed to each possible number`, () => {
+    expect(Object.keys(sudoku.graph)).toEqual([...Array(9).keys()].map(el => (el + 1).toString()));
+  });
+
+  test(`should make the graph's values contain both keys and arrays whose values are valid columns and rows`, () => { 
+    expect(checkGraph()).toBeTruthy();
   });
 });
