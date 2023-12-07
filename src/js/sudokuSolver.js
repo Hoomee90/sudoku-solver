@@ -59,7 +59,6 @@ export default class SudokuSolver {
         continue;
       }
       this.board[rows[r]][c] = keys[k];
-      console.log(this.board);
       
       if (this.safelyPlaced(c, rows[r])) {
         if (r < rows.length - 1) {

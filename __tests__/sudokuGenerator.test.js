@@ -61,6 +61,6 @@ describe (`generateBoard`, () => {
   test(`generateBoard should do all of the above`, () => {
     const shuffledMatrix = sudoku.generateBoard()
 
-    expect(shuffledMatrix).not.toEqual(sudoku);
+    expect(shuffledMatrix).not.toEqual(sudoku.board);
   });
 });

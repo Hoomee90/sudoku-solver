@@ -6,7 +6,7 @@ let strangeSudoku;
   
 beforeEach(() => {
   sudoku = new SudokuSolver(seeds["easy"][0]);
-  strangeSudoku = new SudokuSolver(seeds["bad"][1]);
+  strangeSudoku = new SudokuSolver(seeds["test"][1]);
   strangeSudoku.buildPosAndRem();
   strangeSudoku.buildGraph();
   sudoku.buildPosAndRem();
@@ -28,7 +28,7 @@ describe (`safelyPlaced`, () => {
   let sudoku;
   
   beforeEach(() => {
-    sudoku = new SudokuSolver(seeds["bad"][0]);
+    sudoku = new SudokuSolver(seeds["test"][0]);
   });
 
   test(`rowSafe`, () => {
@@ -88,7 +88,7 @@ describe(`buildPosAndRem`, () => {
     expect([...sudoku.rem.keys()]).toEqual(checkRem(sudoku));
   });
 
-  test(`rem should work even on boards with no instances of a number`, () => {
+  test(`rem should work even on boards with no instances of a number present`, () => {
     
     expect([...strangeSudoku.rem.keys()]).toEqual(checkRem(strangeSudoku));
   });
@@ -96,15 +96,19 @@ describe(`buildPosAndRem`, () => {
 
 describe(`buildGraph`, () => {
 
-  const checkGraph = () => {
-    return Object.keys(sudoku.graph).every(key => Object.keys(sudoku.graph[key]).every(row => sudoku.graph[key][row].every(col => col < 9) && parseInt(row) < 9));
+  const checkGraph = (board) => {
+    return Object.keys(board.graph).every(key => Object.keys(board.graph[key]).every(row => board.graph[key][row].every(col => col < 9) && parseInt(row) < 9));
   }
 
   test(`should make the graph contain values keyed to each possible number`, () => {
     expect(Object.keys(sudoku.graph)).toEqual([...Array(9).keys()].map(el => (el + 1).toString()));
   });
 
-  test(`should make the graph's values contain both keys and arrays whose values are valid columns and rows`, () => { 
-    expect(checkGraph()).toBeTruthy();
+  test(`should fill graph's values to contain both keys and arrays whose values are valid columns and rows`, () => { 
+    expect(checkGraph(sudoku)).toBeTruthy();
+  });
+
+  test(`should fill graph's values correctly even when there are no instances of a number present`, () => { 
+    expect(checkGraph(strangeSudoku)).toBeTruthy();
   });
 });
