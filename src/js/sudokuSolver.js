@@ -38,39 +38,10 @@ export default class SudokuSolver {
     }
   }
 
-  rowSafe(x, y, num) {
-    return this.board[y].filter(cell => cell === num).length < 2;
-  }
-
-  colSafe(x, y, num) {
-    return this.board.filter(row => row[x] === num).length < 2;
-  }
-
-  boxSafe(x, y, num) {
-    const boxStartRow = y - (y % 3);
-    const boxStartCol = x - (x % 3);
-    let numInstances = 0;
-
-    for (const boxRow of [0, 1, 2]) {
-      for (const boxCol of [0, 1, 2]) {
-        if (this.board[boxStartRow + boxRow][boxStartCol + boxCol] === num) {
-          numInstances++;
-        }
-      }
-    }
-    return numInstances < 2;
-  }
-
-  safelyPlaced(x, y) {
-  const num = this.board[y][x];
-    if (!this.rowSafe(x, y, num) || !this.colSafe(x, y)) {
-      return false;
-    }
-
-    if (!this.boxSafe(x, y, num)) {
-      return false;
-    }
-    return true;
+  safelyPlaced(x, y, num) {
+  const boxIndex = Math.floor(y / 3) * 3 + Math.floor(x / 3);
+  
+  return this.rowCache[y].has(num) && this.colCache[x].has(num) && this.boxCache[boxIndex].has(num);
   }
 
   fillBoard(k, keys, r, rows) {
@@ -79,13 +50,15 @@ export default class SudokuSolver {
         continue;
       }
       this.board[rows[r]][c] = keys[k];
-      
-      if (this.safelyPlaced(c, rows[r])) {
+      this.updateSafetyCache(c, rows[r], keys[k], true);
+
+      if (this.safelyPlaced(c, rows[r], keys[k])) {
         if (r < rows.length - 1) {
           if (this.fillBoard(k, keys, r + 1, rows)) {
             return true;
           } else {
             this.board[rows[r]][c] = 0;
+            this.updateSafetyCache(c, rows[r], keys[k], false);
             continue;
           }
         } else {
@@ -94,6 +67,7 @@ export default class SudokuSolver {
               return true;
             } else {
               this.board[rows[r]][c] = 0;
+              this.updateSafetyCache(c, rows[r], keys[k], false);
               continue;
             }
           }
@@ -101,6 +75,7 @@ export default class SudokuSolver {
         }
       }
       this.board[rows[r]][c] = 0;
+      this.updateSafetyCache(c, rows[r], keys[k], false);
     }
     return false;
   }
@@ -171,6 +146,7 @@ export default class SudokuSolver {
   }
 
   solveBoard() {
+    this.initializeSafetyCache();
     this.buildPosAndRem();
     this.buildGraph();
 
