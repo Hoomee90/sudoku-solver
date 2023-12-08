@@ -22,6 +22,14 @@ export default class SudokuSolver {
     this.rowCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
     this.colCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
     this.boxCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        if (this.board[r][c] !== 0) {
+          this.updateSafetyCache(c, r, this.board[r][c]);
+        }
+      }
+    }
   }
 
   updateSafetyCache(x, y, num, add) {
@@ -58,19 +66,18 @@ export default class SudokuSolver {
           if (this.fillBoard(k, keys, r + 1, rows)) {
             return true;
           }
-        } else if (k < keys.length - 1) {
+        } else {
+          if (k < keys.length - 1) {
             if (this.fillBoard(k + 1, keys, 0, this.graphKeys(k + 1))) {
               return true;
             }
-            
-        } else {
-          return true;
+          } else {
+            return true;
+          }
         }
-
         this.board[rows[r]][c] = 0;
         this.updateSafetyCache(c, rows[r], keys[k], true);
-      } else {
-        continue;
+        
       }
     }
     return false;
