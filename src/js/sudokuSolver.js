@@ -49,33 +49,29 @@ export default class SudokuSolver {
       if (this.board[rows[r]][c] > 0) {
         continue;
       }
-      this.board[rows[r]][c] = keys[k];
-      this.updateSafetyCache(c, rows[r], keys[k], true);
 
       if (this.safelyPlaced(c, rows[r], keys[k])) {
+        this.board[rows[r]][c] = keys[k];
+        this.updateSafetyCache(c, rows[r], keys[k], false);
+
         if (r < rows.length - 1) {
           if (this.fillBoard(k, keys, r + 1, rows)) {
             return true;
-          } else {
-            this.board[rows[r]][c] = 0;
-            this.updateSafetyCache(c, rows[r], keys[k], false);
-            continue;
           }
-        } else {
-          if (k < keys.length - 1) {
+        } else if (k < keys.length - 1) {
             if (this.fillBoard(k + 1, keys, 0, this.graphKeys(k + 1))) {
               return true;
-            } else {
-              this.board[rows[r]][c] = 0;
-              this.updateSafetyCache(c, rows[r], keys[k], false);
-              continue;
             }
-          }
+            
+        } else {
           return true;
         }
+
+        this.board[rows[r]][c] = 0;
+        this.updateSafetyCache(c, rows[r], keys[k], true);
+      } else {
+        continue;
       }
-      this.board[rows[r]][c] = 0;
-      this.updateSafetyCache(c, rows[r], keys[k], false);
     }
     return false;
   }
@@ -92,7 +88,7 @@ export default class SudokuSolver {
           if (!remObj.hasOwnProperty(this.board[i][j])) {
             remObj[this.board[i][j]] = 9;
           }
-          remObj[this.board[i][j]] -= 9;
+          remObj[this.board[i][j]] -= 1;
         }
       }
     }
