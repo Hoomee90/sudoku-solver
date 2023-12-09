@@ -1,13 +1,20 @@
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./css/styles.css"
 import SudokuGenerator from "../src/js/sudokuGenerator";
 import SudokuSolver from "../src/js/sudokuSolver";
 import seeds from "../src/js/sudokuSeeds.json";
 
-const sudokuGenerator = new SudokuGenerator(seeds["easy"][0]);
-console.log(structuredClone(seeds["easy"][0]));
-let sudokuSolver = new SudokuSolver(seeds["easy"][0]);
+let sudokuGenerator = new SudokuGenerator();
+let sudokuSolver = new SudokuSolver(sudokuGenerator.newBoard);
 
-sudokuSolver.solveBoard();
+function buildBoard(board) {
+  for (let r = 0; r < 9; r++) {
+    const row = document.querySelector(`.s-row-${r}`);
+    for (let c = 0; c < 9; c++) {
+      row.children[c].value = board[r][c];
+    }
+  }
+}
 
-console.log(sudokuSolver.board);
+buildBoard(seeds["easy"][0]);
