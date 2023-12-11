@@ -1,6 +1,5 @@
 export default class SudokuSolver {
   constructor(initialBoard) {
-    //Array.from(Array(9), () => Array(9).fill(0))
     this.board = initialBoard; //2D array
     this.pos = {}; //board as represented cell value keys and each coordinate array as a values
     this.rem = new Map(); // map of which keys are the order the values should be checked
@@ -12,6 +11,15 @@ export default class SudokuSolver {
     //    }
     // }
     this.graph = {};
+    this.observers = [];
+  }
+
+  addObserver(observerCallback) {
+    this.observers.push(observerCallback);
+  }
+
+  notifyObservers(x, y, value) {
+    this.observers.forEach(callback => callback(x, y, value));
   }
 
   graphKeys(index) {
@@ -19,9 +27,9 @@ export default class SudokuSolver {
   }
 
   initializeSafetyCache() {
-    this.rowCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
-    this.colCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
-    this.boxCache = Array.from({ length: 9 }, () => new Set(Array.from({ length: 9 }, (_, i) => i + 1)));
+    this.rowCache = Array.from(Array(9), () => new Set(Array.from(Array(9), (_, i) => i + 1)));
+    this.colCache = Array.from(Array(9), () => new Set(Array.from(Array(9), (_, i) => i + 1)));
+    this.boxCache = Array.from(Array(9), () => new Set(Array.from(Array(9), (_, i) => i + 1)));
 
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
@@ -60,6 +68,7 @@ export default class SudokuSolver {
 
       if (this.safelyPlaced(c, rows[r], keys[k])) {
         this.board[rows[r]][c] = keys[k];
+        this.notifyObservers(c, rows[r], keys[k]);
         this.updateSafetyCache(c, rows[r], keys[k], false);
 
         if (r < rows.length - 1) {
@@ -76,8 +85,8 @@ export default class SudokuSolver {
           }
         }
         this.board[rows[r]][c] = 0;
+        this.notifyObservers(c, rows[r], null);
         this.updateSafetyCache(c, rows[r], keys[k], true);
-        
       }
     }
     return false;
