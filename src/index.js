@@ -5,10 +5,6 @@ import SudokuGenerator from "../src/js/sudokuGenerator";
 import SudokuSolver from "../src/js/sudokuSolver";
 import seeds from "../src/js/sudokuSeeds.json";
 
-let sudokuGenerator = new SudokuGenerator();
-sudokuGenerator.generateBoard()
-let sudokuSolver = new SudokuSolver(sudokuGenerator.newBoard);
-
 function buildBoard(board) {
   for (let r = 0; r < 9; r++) {
     const row = document.querySelector(`.s-row-${r}`);
@@ -16,13 +12,12 @@ function buildBoard(board) {
       if (board[r][c]) {
         row.children[c].value = board[r][c];
       }
-      
     }
   }
 }
 
-function showSteps(solver) {
-  let [x, y, num] = solver.steps[solver.currentStep];
+function showSteps(solver, progressBar) {
+  const [x, y, num] = solver.steps[solver.currentStep];
   setTimeout(() => {
     let cell = document.querySelector(`.s-row-${y} > .s-col-${x}`);
 
@@ -30,17 +25,26 @@ function showSteps(solver) {
       cell.value = num;
     }
 
-    if(solver.currentStep < solver.steps.length - 1) {
-      solver.updateStepPos();
-      showSteps(solver);
+    solver.updateStepPos();
+    progressBar.style.width = `${solver.currentStep / solver.steps.length * 100}%`;
+
+    if(solver.currentStep < solver.steps.length) {
+      showSteps(solver, progressBar);
     }
-  }, 1 * 1000);
+  }, 0.01 * 1000);
 }
 
-buildBoard(sudokuGenerator.newBoard);
+function initializeBoard() {
+  let sudokuGenerator = new SudokuGenerator();
+  sudokuGenerator.generateBoard();
+  buildBoard(sudokuGenerator.newBoard);
 
-document.querySelector("button#solve").addEventListener("click", () => {
-  sudokuSolver.solveBoard();
+  let sudokuSolver = new SudokuSolver(sudokuGenerator.newBoard);
+  document.querySelector("button#solve").addEventListener("click", () => {
+    sudokuSolver.solveBoard();
 
-  showSteps(sudokuSolver);
-});
+    showSteps(sudokuSolver, document.querySelector("div.progress-bar"));
+  });
+}
+
+initializeBoard();
