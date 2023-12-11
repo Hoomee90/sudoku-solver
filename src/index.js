@@ -19,6 +19,12 @@ function buildBoard(board) {
 function showSteps(e) {
   const solver = e.target.solver;
   const [x, y, num] = solver.steps[solver.currentStep];
+
+  if (solver.currentStep === 0) {
+    document.querySelector("button#build").removeEventListener("click", initializeBoard);
+    e.target.removeEventListener("click", showSteps)
+  }
+
   setTimeout(() => {
     let cell = document.querySelector(`.s-row-${y} > .s-col-${x}`);
 
@@ -31,10 +37,11 @@ function showSteps(e) {
 
     if(solver.currentStep < solver.steps.length) {
       showSteps(e);
+    } else {
+      document.querySelector("button#build").addEventListener("click", initializeBoard)
     }
   }, 10 / Math.log10(solver.steps.length));
 }
-
 
 function initializeBoard() {
   let sudokuGenerator = new SudokuGenerator();
@@ -50,4 +57,5 @@ function initializeBoard() {
   solveButton.addEventListener("click", showSteps);
 }
 
+initializeBoard();
 document.querySelector("button#build").addEventListener("click", initializeBoard);
