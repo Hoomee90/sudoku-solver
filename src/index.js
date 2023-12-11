@@ -16,7 +16,8 @@ function buildBoard(board) {
   }
 }
 
-function showSteps(solver, progressBar) {
+function showSteps(e) {
+  const solver = e.target.solver;
   const [x, y, num] = solver.steps[solver.currentStep];
   setTimeout(() => {
     let cell = document.querySelector(`.s-row-${y} > .s-col-${x}`);
@@ -26,25 +27,27 @@ function showSteps(solver, progressBar) {
     }
 
     solver.updateStepPos();
-    progressBar.style.width = `${solver.currentStep / solver.steps.length * 100}%`;
+    document.querySelector("div.progress-bar").style.width = `${solver.currentStep / solver.steps.length * 100}%`;
 
     if(solver.currentStep < solver.steps.length) {
-      showSteps(solver, progressBar);
+      showSteps(e);
     }
-  }, 0.01 * 1000);
+  }, 10 / Math.log10(solver.steps.length));
 }
+
 
 function initializeBoard() {
   let sudokuGenerator = new SudokuGenerator();
   sudokuGenerator.generateBoard();
+  
+  let sudokuSolver = new SudokuSolver(structuredClone(sudokuGenerator.newBoard));
+
   buildBoard(sudokuGenerator.newBoard);
-
-  let sudokuSolver = new SudokuSolver(sudokuGenerator.newBoard);
-  document.querySelector("button#solve").addEventListener("click", () => {
-    sudokuSolver.solveBoard();
-
-    showSteps(sudokuSolver, document.querySelector("div.progress-bar"));
-  });
+  sudokuSolver.solveBoard();
+  
+  const solveButton = document.querySelector("button#solve");
+  solveButton.solver = sudokuSolver;
+  solveButton.addEventListener("click", showSteps);
 }
 
-initializeBoard();
+document.querySelector("button#build").addEventListener("click", initializeBoard);
