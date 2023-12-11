@@ -12,6 +12,11 @@ export default class SudokuSolver {
     // }
     this.graph = {};
     this.steps = [];
+    this.currentStep = 0;
+  }
+
+  updateStepPos() {
+    this.currentStep++;
   }
 
   addStep(x, y, value) {

@@ -21,10 +21,8 @@ function buildBoard(board) {
   }
 }
 
-let currentStep = 0;
-
-function showSteps(steps) {
-  let [x, y, num] = steps[currentStep];
+function showSteps(solver) {
+  let [x, y, num] = solver.steps[solver.currentStep];
   setTimeout(() => {
     let cell = document.querySelector(`.s-row-${y} > .s-col-${x}`);
 
@@ -32,17 +30,17 @@ function showSteps(steps) {
       cell.value = num;
     }
 
-    if(currentStep < steps.length - 1) {
-      currentStep++;
-      showSteps(steps);
+    if(solver.currentStep < solver.steps.length - 1) {
+      solver.updateStepPos();
+      showSteps(solver);
     }
-  }, 0.001 * 1000);
+  }, 1 * 1000);
 }
 
 buildBoard(sudokuGenerator.newBoard);
 
 document.querySelector("button#solve").addEventListener("click", () => {
   sudokuSolver.solveBoard();
-  showSteps(sudokuSolver.steps);
-  // buildBoard(sudokuSolver.board);
+
+  showSteps(sudokuSolver);
 });
