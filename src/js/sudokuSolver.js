@@ -11,15 +11,11 @@ export default class SudokuSolver {
     //    }
     // }
     this.graph = {};
-    this.observers = [];
+    this.steps = [];
   }
 
-  addObserver(observerCallback) {
-    this.observers.push(observerCallback);
-  }
-
-  notifyObservers(x, y, value) {
-    this.observers.forEach(callback => callback(x, y, value));
+  addStep(x, y, value) {
+    this.steps.push([x, y, value]);
   }
 
   graphKeys(index) {
@@ -68,7 +64,7 @@ export default class SudokuSolver {
 
       if (this.safelyPlaced(c, rows[r], keys[k])) {
         this.board[rows[r]][c] = keys[k];
-        this.notifyObservers(c, rows[r], keys[k]);
+        this.addStep(c, rows[r], keys[k]);
         this.updateSafetyCache(c, rows[r], keys[k], false);
 
         if (r < rows.length - 1) {
@@ -85,7 +81,7 @@ export default class SudokuSolver {
           }
         }
         this.board[rows[r]][c] = 0;
-        this.notifyObservers(c, rows[r], null);
+        this.addStep(c, rows[r], null);
         this.updateSafetyCache(c, rows[r], keys[k], true);
       }
     }

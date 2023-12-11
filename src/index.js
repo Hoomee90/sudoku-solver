@@ -21,18 +21,28 @@ function buildBoard(board) {
   }
 }
 
-function updateBoardCell(x, y, num) {
-  let cell = document.querySelector(`.s-row-${y} > .s-col-${x}`);
-  console.log(cell);
-  if (cell) {
-    cell.value = num;
-  }
+let currentStep = 0;
+
+function showSteps(steps) {
+  let [x, y, num] = steps[currentStep];
+  setTimeout(() => {
+    let cell = document.querySelector(`.s-row-${y} > .s-col-${x}`);
+
+    if (cell) {
+      cell.value = num;
+    }
+
+    if(currentStep < steps.length - 1) {
+      currentStep++;
+      showSteps(steps);
+    }
+  }, 0.001 * 1000);
 }
 
 buildBoard(sudokuGenerator.newBoard);
-updateBoardCell(0, 0, "test");
 
 document.querySelector("button#solve").addEventListener("click", () => {
-  sudokuSolver.solveBoard()
-  buildBoard(sudokuSolver.board);
+  sudokuSolver.solveBoard();
+  showSteps(sudokuSolver.steps);
+  // buildBoard(sudokuSolver.board);
 });
