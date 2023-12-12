@@ -1,4 +1,4 @@
-.input-group > input {
+.input-group .form-control {
   text-align: center;
   width: 2em;
   height: 2em;
@@ -9,4 +9,20 @@
 #board {
   width: 25em;
   margin: auto;
+}
+
+.s-row-2 input, .s-row-5 input, .s-row-8 input {
+  border-bottom-color: black;
+}
+
+.s-row-0 input {
+  border-top-color: black;
+}
+
+input.s-col-0, input.s-col-3,  input.s-col-6 {
+  border-left-color: black;
+}
+
+input.s-col-8 {
+  border-right-color: black;
 }
