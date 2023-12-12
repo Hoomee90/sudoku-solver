@@ -10,8 +10,12 @@ function buildBoard(board) {
     const row = document.querySelector(`.s-row-${r}`);
     for (let c = 0; c < 9; c++) {
       row.children[c].value = null;
+      row.children[c].classList.remove("bg-light");
+      row.children[c].removeAttribute("disabled");
       if (board[r][c]) {
         row.children[c].value = board[r][c];
+        row.children[c].classList.add("bg-light");
+        row.children[c].setAttribute("disabled", "");
       }
     }
   }
@@ -19,7 +23,6 @@ function buildBoard(board) {
 
 function showSteps(e) {
   const solver = e.target.solver;
-  console.log(solver.steps.length);
   const step = (steps) => {
     for(let i = 0; i <= steps; i++) {
       const [x, y, num] = solver.steps[solver.currentStep];
