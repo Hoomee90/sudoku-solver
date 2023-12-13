@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./css/styles.css"
 import SudokuGenerator from "../src/js/sudokuGenerator";
 import SudokuSolver from "../src/js/sudokuSolver";
-import seeds from "../src/js/sudokuSeeds.json";
 
 function buildBoard(board) {
   for (let r = 0; r < 9; r++) {
@@ -43,7 +42,7 @@ function showSteps(e) {
 
   if (solver.currentStep === 0) {
     document.querySelector("button#build").removeEventListener("click", initializeBoard);
-    e.target.removeEventListener("click", showSteps)
+    e.target.removeEventListener("click", showSteps);
   }
 
   if(solver.currentStep < solver.steps.length) {

@@ -24,14 +24,6 @@ describe (`sudokuSolver`, () => {
   });
 });
 
-// describe (`safelyPlaced`, () => {
-//   let sudoku;
-  
-//   beforeEach(() => {
-//     sudoku = new SudokuSolver(seeds["test"][0]);
-//   });
-// });
-
 describe(`buildPosAndRem`, () => {
 
   const checkPos = (newBoard, solver) => {

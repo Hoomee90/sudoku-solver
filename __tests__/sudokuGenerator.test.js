@@ -21,7 +21,6 @@ describe (`generateBoard`, () => {
   });
 
   test(`rotateMatrix should rotate board 90°`, () => {
-    // expect(sudoku.rotateMatrix().every((row, index) => row.every((el, index) => index <= 9) && index <= 9)).toBeTruthy();
     expect(sudoku.rotateMatrix()).toEqual([[0, 0, 0, 2, 0, 0, 0, 8, 1],
       [0, 0, 6, 7, 5, 0, 0, 0, 0],
       [0, 7, 0, 8, 9, 0, 0, 5, 6],
@@ -34,7 +33,6 @@ describe (`generateBoard`, () => {
   });
 
   test(`mapMatrix should map each number to another random number°`, () => {
-    // expect(sudoku.rotateMatrix().every((row, index) => row.every((el, index) => index <= 9) && index <= 9)).toBeTruthy();
     const mappedMatrix = sudoku.mapMatrix();
     expect(mappedMatrix[0][0]).toEqual(mappedMatrix[8][5]);
     expect(mappedMatrix[0][0]).not.toEqual(mappedMatrix[0][3]);

@@ -1,17 +1,18 @@
 export default class SudokuSolver {
   constructor(initialBoard) {
     this.board = initialBoard; //2D array
-    this.pos = {}; //board as represented cell value keys and each coordinate array as a values
+    this.pos = {}; // board as represented cell value keys and each coordinate array as a values, for building graph
     this.rem = new Map(); // map of which keys are the order the values should be checked
+    this.graph = {};
+    // graph property looks like:
     // graph = {
     //  cell value: {
     //    row1: [columns],
     //    row2: [columns],
-    ///   ...
+    // /   ...
     //    }
     // }
-    this.graph = {};
-    this.steps = [];
+    this.steps = []; // every step take in process of solving as [x, y, num || null]
     this.currentStep = 0;
   }
 
@@ -20,18 +21,22 @@ export default class SudokuSolver {
   }
 
   addStep(x, y, value) {
+    // add a step taken to the steps property
     this.steps.push([x, y, value]);
   }
 
-  graphKeys(index) {
-    return Object.keys(this.graph[[...this.rem.keys()][index]]).map(el => parseInt(el));
+  graphKeys(cellValueNum) {
+    // return a list of y values the graph has for the give cell value of any entry of this.rem
+    return Object.keys(this.graph[[...this.rem.keys()][cellValueNum]]).map(el => parseInt(el));
   }
 
   initializeSafetyCache() {
+    // create three arrays, each with nine elements, each a set of all cell values safe to place in a given row/col/box
     this.rowCache = Array.from(Array(9), () => new Set(Array.from(Array(9), (_, i) => i + 1)));
     this.colCache = Array.from(Array(9), () => new Set(Array.from(Array(9), (_, i) => i + 1)));
     this.boxCache = Array.from(Array(9), () => new Set(Array.from(Array(9), (_, i) => i + 1)));
 
+    // remove all cells from the safety cache that are unsafe due to initial board
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         if (this.board[r][c] !== 0) {
@@ -42,6 +47,7 @@ export default class SudokuSolver {
   }
 
   updateSafetyCache(x, y, num, add) {
+    // either remove cells from the caches if they've been placed, or add them back if they've been removed
     const boxIndex = Math.floor(y / 3) * 3 + Math.floor(x / 3);
 
     if (add) {
@@ -56,13 +62,14 @@ export default class SudokuSolver {
   }
 
   safelyPlaced(x, y, num) {
+  // the caches contain only valid nums for the given index (rows[y] is all valid cell values to place in board[y] etc...)
   const boxIndex = Math.floor(y / 3) * 3 + Math.floor(x / 3);
   
   return this.rowCache[y].has(num) && this.colCache[x].has(num) && this.boxCache[boxIndex].has(num);
   }
 
   fillBoard(k, keys, r, rows) {
-    for (let c of this.graph[keys[k]][rows[r]]) {
+    for (const c of this.graph[keys[k]][rows[r]]) {
       if (this.board[rows[r]][c] > 0) {
         continue;
       }
@@ -95,6 +102,10 @@ export default class SudokuSolver {
 
   buildPosAndRem() {
     let remObj = {}
+    
+    // set up pos and rem to resemble their respective data structures, then:
+    // add each cell's coords to pos
+    // shrink rem values for each given appearance of the analogous cell value
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         if (this.board[i][j] > 0) {
@@ -110,7 +121,7 @@ export default class SudokuSolver {
       }
     }
 
-    // Fill elements not present in pos and rem
+    // fill elements not present in pos and rem
       for (let i = 1; i < 10; i++) {
         if (!this.pos.hasOwnProperty(i)) {
           this.pos[i] = [];
@@ -120,6 +131,7 @@ export default class SudokuSolver {
       }
     }
 
+    // turn rem object into sortable array, then build map with most common cell values appearing as first keys
     let remEntries = Object.entries(remObj);
     remEntries = remEntries.sort((a, b) => a[1] - b[1]);
     for (const [k, v] of remEntries) {
@@ -128,30 +140,33 @@ export default class SudokuSolver {
   }
 
   buildGraph() {
-    for (let [k, v] of Object.entries(this.pos)) {
-      if(!this.graph.hasOwnProperty(k)) {
-        this.graph[k] = {};
+    // build graph with the same keys-as-cell-values as this.pos
+    for (const [cellValue, coords] of Object.entries(this.pos)) {
+      if(!this.graph.hasOwnProperty(cellValue)) {
+        this.graph[cellValue] = {};
       }
 
-      let row = [...Array(9).keys()];
-      let col = [...Array(9).keys()];
+      let validRows = [...Array(9).keys()];
+      let validCols = [...Array(9).keys()];
 
-      for (const cord of v) {
-        row.splice(row.indexOf(cord[0]), 1);
-        col.splice(col.indexOf(cord[1]), 1);
+      // cut out all rows and cols to be added that already have the cellValue with coords there. This is to account for the preexisting cells on the board
+      for (const coord of coords) {
+        validRows.splice(validRows.indexOf(coord[0]), 1);
+        validCols.splice(validCols.indexOf(coord[1]), 1);
       }
 
-      if (row.length === 0 || col.length === 0) {
+      if (validRows.length === 0 || validCols.length === 0) {
         continue;
       }
 
-      for (let r of row) {
-        for (let c of col) {
+      // add to graph the valid rows and cols for a value
+      for (const r of validRows) {
+        for (const c of validCols) {
           if (this.board[r][c] === 0) {
-            if (!this.graph[k].hasOwnProperty(r)) {
-              this.graph[k][r] = [];
+            if (!this.graph[cellValue].hasOwnProperty(r)) {
+              this.graph[cellValue][r] = [];
             }
-            this.graph[k][r].push(c);
+            this.graph[cellValue][r].push(c);
           }
         }
       }
@@ -159,6 +174,7 @@ export default class SudokuSolver {
   }
 
   solveBoard() {
+    // call all required methods to solve board
     this.initializeSafetyCache();
     this.buildPosAndRem();
     this.buildGraph();
