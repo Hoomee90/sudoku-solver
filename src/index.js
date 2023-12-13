@@ -59,17 +59,37 @@ function showSteps(e) {
   }
 }
 
-function handleBoardInput() {
+function handleBoardInput(e) {
+  let newSudokuSolver = new SudokuSolver(null);
+  const board = document.querySelector(`#board`);
   document.querySelector("div.progress-bar").style.width = `0%`;
+  
   const solveButton = document.querySelector("button#solve");
-  solveButton.solver = null;
+  solveButton.solver = newSudokuSolver;
   solveButton.setAttribute(`disabled`, ``);
   
   buildBoard();
+
+  for (let child of board.querySelectorAll(`#board > *`)) {
+    child.addEventListener(`change`, parseBoard);
+  }
 }
 
 function parseBoard() {
-
+  let board = []
+  for (let r = 0; r < 9; r++) {
+    const row = document.querySelector(`.s-row-${r}`);
+    board.push([])
+    for (let c = 0; c < 9; c++) {
+      const cellValue = parseInt(row.querySelector(`.s-col-${c}`).value)
+      if (cellValue && cellValue <= 9) {
+        board[r].push(cellValue);
+      } else {
+        board[r].push(0);
+      }
+    }
+  }
+  return board;
 }
 
 function initializeBoard() {
