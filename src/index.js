@@ -59,8 +59,9 @@ function showSteps(e) {
   }
 }
 
-function handleBoardInput(e) {
+function handleBoardInput() {
   let newSudokuSolver = new SudokuSolver(null);
+  newSudokuSolver.initializeSafetyCache()
   const board = document.querySelector(`#board`);
   document.querySelector("div.progress-bar").style.width = `0%`;
   
@@ -70,26 +71,39 @@ function handleBoardInput(e) {
   
   buildBoard();
 
-  for (let child of board.querySelectorAll(`#board > *`)) {
-    child.addEventListener(`change`, parseBoard);
+  const rows = board.querySelectorAll(`#board > *`)
+
+  for (let i = 0; i < 9; i++) {
+    const cols = rows[i].children
+    for (let j = 0; j < 9; j++) {
+      cols[j].previousValue = [j, i, 0];
+      cols[j].addEventListener(`change`, parseChange);
+    }
   }
 }
 
-function parseBoard() {
-  let board = []
-  for (let r = 0; r < 9; r++) {
-    const row = document.querySelector(`.s-row-${r}`);
-    board.push([])
-    for (let c = 0; c < 9; c++) {
-      const cellValue = parseInt(row.querySelector(`.s-col-${c}`).value)
-      if (cellValue && cellValue <= 9) {
-        board[r].push(cellValue);
-      } else {
-        board[r].push(0);
-      }
-    }
+function parseChange(e) {
+  let sudokuSolver = document.querySelector("button#solve").solver;
+  const inputX = parseInt(e.target.classList.item(0).charAt(6));
+  const inputY = parseInt(e.target.parentElement.classList.item(0).charAt(6));
+  const newValue = (parseInt(e.target.value) && parseInt(e.target.value) <= 9) ? parseInt(e.target.value) : 0;
+
+  if (e.target.previousValue[0] === inputX && e.target.previousValue[1] === inputY && e.target.previousValue[2]) {
+    sudokuSolver.updateSafetyCache(inputX, inputY, e.target.previousValue[2], true);
   }
-  return board;
+
+  if (newValue) {
+    sudokuSolver.updateSafetyCache(inputX, inputY, newValue);
+  }
+
+  e.target.previousValue = [inputX, inputY, newValue];
+  console.log(sudokuSolver);
+}
+
+function checkBoard(board) {
+  let sudokuSolver = document.querySelector("button#solve").solver;
+  sudokuSolver.newBoard(board);
+  sudokuSolver.initializeSafetyCache();
 }
 
 function initializeBoard() {
