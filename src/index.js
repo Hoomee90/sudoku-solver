@@ -11,10 +11,12 @@ function buildBoard(board) {
       row.children[c].value = null;
       row.children[c].classList.remove("bg-light");
       row.children[c].removeAttribute("disabled");
-      if (board[r][c]) {
-        row.children[c].value = board[r][c];
-        row.children[c].classList.add("bg-light");
-        row.children[c].setAttribute("disabled", "");
+      if (board) {
+        if (board[r][c]) {
+          row.children[c].value = board[r][c];
+          row.children[c].classList.add("bg-light");
+          row.children[c].setAttribute("disabled", "");
+        }
       }
     }
   }
@@ -42,6 +44,7 @@ function showSteps(e) {
 
   if (solver.currentStep === 0) {
     document.querySelector("button#build").removeEventListener("click", initializeBoard);
+    document.querySelector("button#inputBoard").removeEventListener("click", handleBoardInput);
     e.target.removeEventListener("click", showSteps);
   }
 
@@ -52,7 +55,21 @@ function showSteps(e) {
   }, 0.02 * 1000);
   } else {
     document.querySelector("button#build").addEventListener("click", initializeBoard);
+    document.querySelector("button#inputBoard").addEventListener("click", handleBoardInput);
   }
+}
+
+function handleBoardInput() {
+  document.querySelector("div.progress-bar").style.width = `0%`;
+  const solveButton = document.querySelector("button#solve");
+  solveButton.solver = null;
+  solveButton.setAttribute(`disabled`, ``);
+  
+  buildBoard();
+}
+
+function parseBoard() {
+
 }
 
 function initializeBoard() {
@@ -63,11 +80,13 @@ function initializeBoard() {
   let sudokuSolver = new SudokuSolver(structuredClone(sudokuGenerator.newBoard));
   sudokuSolver.solveBoard();
   
-  const solveButton = document.querySelector("button#solve");
   document.querySelector("div.progress-bar").style.width = `0%`;
+  const solveButton = document.querySelector("button#solve");
+  solveButton.removeAttribute(`disabled`);
   solveButton.solver = sudokuSolver;
   solveButton.addEventListener("click", showSteps);
 }
 
 initializeBoard();
 document.querySelector("button#build").addEventListener("click", initializeBoard);
+document.querySelector("button#inputBoard").addEventListener("click", handleBoardInput);
