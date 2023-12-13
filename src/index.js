@@ -61,16 +61,17 @@ function showSteps(e) {
 
 function handleBoardInput() {
   let newSudokuSolver = new SudokuSolver(null);
-  newSudokuSolver.initializeSafetyCache()
+  newSudokuSolver.initializeSafetyCache();
+  console.log(newSudokuSolver);
   const board = document.querySelector(`#board`);
   document.querySelector("div.progress-bar").style.width = `0%`;
   
   const solveButton = document.querySelector("button#solve");
   solveButton.solver = newSudokuSolver;
+  solveButton.hints = 0;
   solveButton.setAttribute(`disabled`, ``);
   
   buildBoard();
-
   const rows = board.querySelectorAll(`#board > *`)
 
   for (let i = 0; i < 9; i++) {
@@ -83,27 +84,41 @@ function handleBoardInput() {
 }
 
 function parseChange(e) {
-  let sudokuSolver = document.querySelector("button#solve").solver;
+  const solveButton = document.querySelector("button#solve");
+  let sudokuSolver = solveButton.solver;
+
   const inputX = parseInt(e.target.classList.item(0).charAt(6));
   const inputY = parseInt(e.target.parentElement.classList.item(0).charAt(6));
-  const newValue = (parseInt(e.target.value) && parseInt(e.target.value) <= 9) ? parseInt(e.target.value) : 0;
+  let newValue;
+  if (parseInt(e.target.value) <= 9 && sudokuSolver.safelyPlaced(inputX, inputY, parseInt(e.target.value))) {
+    newValue = parseInt(e.target.value);
+  } else {
+    newValue = 0;
+    e.target.value = null;
+  }
 
   if (e.target.previousValue[0] === inputX && e.target.previousValue[1] === inputY && e.target.previousValue[2]) {
+    solveButton.hints--
     sudokuSolver.updateSafetyCache(inputX, inputY, e.target.previousValue[2], true);
   }
 
   if (newValue) {
+    solveButton.hints++
     sudokuSolver.updateSafetyCache(inputX, inputY, newValue);
   }
 
   e.target.previousValue = [inputX, inputY, newValue];
-  console.log(sudokuSolver);
+  
+  checkBoard()
 }
 
-function checkBoard(board) {
-  let sudokuSolver = document.querySelector("button#solve").solver;
-  sudokuSolver.newBoard(board);
-  sudokuSolver.initializeSafetyCache();
+function checkBoard() {
+  const solveButton = document.querySelector("button#solve");
+  let sudokuSolver = solveButton.solver;
+
+  if (solveButton.hints <= 17) {
+    console.log(solveButton.hints);
+  }
 }
 
 function initializeBoard() {

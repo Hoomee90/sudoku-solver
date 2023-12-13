@@ -43,8 +43,10 @@ export default class SudokuSolver {
     // remove all cells from the safety cache that are unsafe due to initial board
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
-        if (this.board[r][c] !== 0) {
-          this.updateSafetyCache(c, r, this.board[r][c]);
+        if (this.board) {
+          if (this.board[r][c] !== 0) {
+            this.updateSafetyCache(c, r, this.board[r][c]);
+          }
         }
       }
     }
@@ -66,7 +68,7 @@ export default class SudokuSolver {
   }
 
   safelyPlaced(x, y, num) {
-  // the caches contain only valid nums for the given index (rows[y] is all valid cell values to place in board[y] etc...)
+  // the caches contain only valid cell values for the given index (rows[y] is all valid cell values to place in board[y] etc...)
   const boxIndex = Math.floor(y / 3) * 3 + Math.floor(x / 3);
   
   return this.rowCache[y].has(num) && this.colCache[x].has(num) && this.boxCache[boxIndex].has(num);
