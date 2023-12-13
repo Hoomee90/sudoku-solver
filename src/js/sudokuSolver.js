@@ -1,6 +1,13 @@
 export default class SudokuSolver {
   constructor(initialBoard) {
-    this.board = initialBoard; //2D array
+    if (initialBoard) {
+      this.board = initialBoard; //2D array
+      this.liveBoard = false;
+    } else {
+      // for creating boards on the fly
+      this.board = Array.from(Array(9), () => Array(9).fill(0));
+      this.liveBoard = true;
+    }
     this.pos = {}; // board as represented cell value keys and each coordinate array as a values, for building graph
     this.rem = new Map(); // map of which keys are the order the values should be checked
     this.graph = {};
@@ -14,10 +21,6 @@ export default class SudokuSolver {
     // }
     this.steps = []; // every step take in process of solving as [x, y, num || null]
     this.currentStep = 0;
-  }
-
-  newBoard(board) {
-    this.board = structuredClone(board);
   }
 
   updateStepPos() {
@@ -60,10 +63,16 @@ export default class SudokuSolver {
       this.rowCache[y].add(num);
       this.colCache[x].add(num);
       this.boxCache[boxIndex].add(num);
+      if (this.liveBoard) {
+        this.board[y][x] = 0;
+      }
     } else {
       this.rowCache[y].delete(num);
       this.colCache[x].delete(num);
       this.boxCache[boxIndex].delete(num);
+      if (this.liveBoard) {
+        this.board[y][x] = num;
+      }
     }
   }
 
