@@ -8,8 +8,17 @@
 <body>
   <div class="container">
     <h1>Sudoku</h1>
-    <button id="build" class="btn btn-primary m-2" type="button">New Board</button>
-    <button id="solve" class="btn btn-primary" type="button">Solve Board</button>
+    <div class="row gx-3 mb-3 justify-content-center">
+      <div class="col-auto">
+        <button id="build" class="btn btn-primary" type="button">Random Board</button>
+      </div>
+      <div class="col-auto">
+        <button id="inputBoard" class="btn btn-primary" type="button">Make Board</button>
+      </div>
+      <div class="col-auto">
+        <button id="solve" class="btn btn-primary col" type="button">Solve Board</button>
+      </div>
+    </div>
     <div id="board">
       <div class="input-group s-row-0">
         <input class="s-col-0 form-control" id="" value="" type="text" name="board">
