@@ -16,6 +16,10 @@ export default class SudokuSolver {
     this.currentStep = 0;
   }
 
+  newBoard(board) {
+    this.board = structuredClone(board);
+  }
+
   updateStepPos() {
     this.currentStep++;
   }
