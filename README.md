@@ -15,7 +15,9 @@
 
 ## Description
 
-This site allow users to generate random sudoku boards with Random Board or create their own by selecting Make Board. They can then use the Solve Board button to watch the computer solve the Sudoku board on screen. (Note that suer inputted boards must have 17 or more user set cell values to do so);
+This site allow users to generate random sudoku boards with Random Board or create their own by selecting Make Board. 
+
+They can then use the Solve Board button to watch the computer solve the Sudoku board on screen (Note that user inputted boards must have 17 or more user set cell values to do so)
 
 ## Setup/Installation Requirements
 
