@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Sudoku</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Sudoku</h1>
+    <div class="row gx-3 mb-3 justify-content-center">
+      <div class="col-auto">
+        <button id="build" class="btn btn-primary" type="button">Random Board</button>
+      </div>
+      <div class="col-auto">
+        <button id="inputBoard" class="btn btn-primary" type="button">Make Board</button>
+      </div>
+      <div class="col-auto">
+        <button id="solve" class="btn btn-primary col" type="button">Solve Board</button>
+      </div>
+    </div>
+    <div id="board">
+      <div class= "s-row-0 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-1 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-2 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-3 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-4 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-5 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-6 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-7 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+      <div class="s-row-8 input-group">
+        <input class="s-col-0 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-1 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-2 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-3 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-4 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-5 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-6 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-7 form-control" id="" value="" type="text" name="board">
+        <input class="s-col-8 form-control" id="" value="" type="text" name="board">
+      </div>
+    </div>
+    <div class="progress my-3" role="progressbar">
+      <div class="progress-bar" style="width: 0%"></div>
+    </div>
+  </div>
+<script defer src="bundle.js"></script></body>
+
+</html>
