@@ -15,7 +15,7 @@
 
 ## Description
 
-This site allow users to generate random sudoku boards, which can be interacted with to solve (though there is no check or reward for doing do). The main feature is the ability to watch the computer solve it quickly at the press of a button.
+This site allow users to generate random sudoku boards with Random Board or create their own by selecting Make Board. They can then use the Solve Board button to watch the computer solve the Sudoku board on screen. (Note that suer inputted boards must have 17 or more user set cell values to do so);
 
 ## Setup/Installation Requirements
 
@@ -25,7 +25,7 @@ This site allow users to generate random sudoku boards, which can be interacted 
 
 ## Known Bugs
 
-* There are no known bugs at this time
+* Though the site seems to be able to successfully solve user inputted boards that have multiple potential solutions, the exact way it interprets these boards are untested.
 
 ## License
 
