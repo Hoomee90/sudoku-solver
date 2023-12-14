@@ -125,6 +125,7 @@ function checkBoard() {
 }
 function boardInputSolve(e) {
   e.target.removeEventListener(`click`, boardInputSolve);
+  buildBoard(e.target.solver.board);
   e.target.solver.solveBoard();
   showSteps(e);
 }
