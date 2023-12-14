@@ -4,6 +4,8 @@
 
 #### Generate Sudoku and watch them be solved
 
+### [See it here](https://hoomee90.github.io/sudoku-solver)
+
 ## Technologies Used
 
 * HTML
