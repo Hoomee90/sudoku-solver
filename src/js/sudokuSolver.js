@@ -190,7 +190,9 @@ export default class SudokuSolver {
 
   solveBoard() {
     // call all required methods to solve board
-    this.initializeSafetyCache();
+    if (!this.liveBoard) {
+      this.initializeSafetyCache();
+    }
     this.buildPosAndRem();
     this.buildGraph();
 

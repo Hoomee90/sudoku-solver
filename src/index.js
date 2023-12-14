@@ -44,7 +44,7 @@ function showSteps(e) {
 
   if (solver.currentStep === 0) {
     document.querySelector("button#build").removeEventListener("click", initializeBoard);
-    document.querySelector("button#inputBoard").removeEventListener("click", handleBoardInput);
+    document.querySelector("button#inputBoard").removeEventListener("click", handleBoardInputInit);
     e.target.removeEventListener("click", showSteps);
   }
 
@@ -55,14 +55,13 @@ function showSteps(e) {
   }, 0.02 * 1000);
   } else {
     document.querySelector("button#build").addEventListener("click", initializeBoard);
-    document.querySelector("button#inputBoard").addEventListener("click", handleBoardInput);
+    document.querySelector("button#inputBoard").addEventListener("click", handleBoardInputInit);
   }
 }
 
-function handleBoardInput() {
+function handleBoardInputInit() {
   let newSudokuSolver = new SudokuSolver(null);
   newSudokuSolver.initializeSafetyCache();
-  console.log(newSudokuSolver);
   const board = document.querySelector(`#board`);
   document.querySelector("div.progress-bar").style.width = `0%`;
   
@@ -109,16 +108,25 @@ function parseChange(e) {
 
   e.target.previousValue = [inputX, inputY, newValue];
   
-  checkBoard()
+  checkBoard();
 }
 
 function checkBoard() {
   const solveButton = document.querySelector("button#solve");
-  let sudokuSolver = solveButton.solver;
 
-  if (solveButton.hints <= 17) {
-    console.log(solveButton.hints);
+  if (solveButton.hints < 17) {
+    solveButton.setAttribute(`disabled`, ``);
+    solveButton.removeEventListener(`click`, boardInputSolve)
+
+  } else if(solveButton.hints === 17) {
+    solveButton.removeAttribute(`disabled`);
+    solveButton.addEventListener(`click`, boardInputSolve);
   }
+}
+function boardInputSolve(e) {
+  e.target.removeEventListener(`click`, boardInputSolve);
+  e.target.solver.solveBoard();
+  showSteps(e);
 }
 
 function initializeBoard() {
@@ -138,4 +146,4 @@ function initializeBoard() {
 
 initializeBoard();
 document.querySelector("button#build").addEventListener("click", initializeBoard);
-document.querySelector("button#inputBoard").addEventListener("click", handleBoardInput);
+document.querySelector("button#inputBoard").addEventListener("click", handleBoardInputInit);
